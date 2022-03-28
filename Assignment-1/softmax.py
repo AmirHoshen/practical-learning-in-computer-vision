@@ -63,6 +63,10 @@ def softmax_loss_naive(W, X, y, reg):
     dW/=x_size
     dW += reg*W
 
+
+
+
+    pass
     # Softmax Loss
 
     
@@ -120,6 +124,9 @@ def softmax_loss_vectorized(W, X, y, reg):
     loss += .5*reg*np.sum(W**2)
     loss = float(loss)
     loss = loss/x_size
+
+    pass
+    
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
     return loss, dW
