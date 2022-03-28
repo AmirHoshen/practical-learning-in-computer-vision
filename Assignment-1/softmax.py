@@ -96,34 +96,18 @@ def softmax_loss_vectorized(W, X, y, reg):
     #############################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    x_size = X.shape[0]
-    x_size = float(x_size)
-    feature_size = W.shape[0]
-    class_size = W.shape[1]
-
-    xw = np.dot(X,W)
-    xw -= np.max(xw)
-    temp_p = np.exp(xw) + (epsilon/100)
-    # e/e.sum(axis=1)[:,None]
-    p = temp_p/temp_p.sum(axis=1)[:,None]
-    
-    #temp_dw = np.zeros_like(p)
-    # we need to create a new y that is composed of one-hot encodings
-    new_y = np.zeros((y.size, class_size))
-    new_y[np.arange(y.size),y] = 1
-    temp_dw= p-new_y
-
-    dW = np.dot(np.transpose(X),temp_dw)
-    dW/= (x_size + epsilon)
-    dW+=reg*W
-
-    corr_y = p[np.arange(x_size), y]
-    
-    loss_temp = np.log(corr_y + epsilon/100)
-    loss = - loss_temp.sum(axis=0)
-    loss += .5*reg*np.sum(W**2)
-    loss = float(loss)
-    loss = loss/x_size
+    num_train = X.shape[0]
+    f = X.dot(W)
+    f = f - np.max(f, axis=1)[:, np.newaxis]
+    loss = -np.sum(
+        np.log(np.exp(f[np.arange(num_train), y]) / np.sum(np.exp(f), axis=1)))
+    loss /= num_train
+    loss += 0.5 * reg * np.sum(W * W)
+    ind = np.zeros_like(f)
+    ind[np.arange(num_train), y] = 1
+    dW = X.T.dot(np.exp(f) / np.sum(np.exp(f), axis=1, keepdims=True) - ind)
+    dW /= num_train
+    dW += reg * W
 
     pass
     
